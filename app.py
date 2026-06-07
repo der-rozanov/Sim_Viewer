@@ -180,7 +180,8 @@ class FlightViewerApp:
             ChartSpec.from_preset(p) for p in PRESETS
             if data.get(p["x"]) is not None and data.get(p["y"]) is not None
         ]
-        self._focus_spec  = None
+        # Траектория главная по умолчанию, если присутствует в данных
+        self._focus_spec  = next((c for c in self.charts if c.x_ch == "x" and c.y_ch == "h"), None)
         self._picked_spec = None
         self._redraw()
 
