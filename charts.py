@@ -65,7 +65,7 @@ def draw_chart(spec: ChartSpec, ax, data: dict, focus_spec,
     spec._dyn_line = dyn_line
     spec._dyn_dot  = dyn_dot
 
-    title = f"★ {spec.label}" if spec is focus_spec else spec.label
+    title = spec.label
     ax.set_title(title, fontsize=9, pad=3)
     ax.set_xlabel(f"{x_name}, {x_unit}", fontsize=8)
     ax.set_ylabel(f"{y_name}, {y_unit}", fontsize=8)
