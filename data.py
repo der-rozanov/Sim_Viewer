@@ -4,31 +4,6 @@ import json
 import numpy as np
 
 
-def _make_mock_data():
-    np.random.seed(42)
-    t  = np.linspace(0, 40, 4000)
-    dt = t[1] - t[0]
-    h        = 100 + 12 * np.sin(0.18 * t) + 0.4 * t
-    x        = 30 * t
-    Va       = 30 + 2.5 * np.sin(0.38 * t) + 0.4 * np.random.randn(len(t))
-    alpha    = np.radians(3 + 2.5 * np.sin(0.32 * t) + 0.3 * np.random.randn(len(t)))
-    theta    = np.radians(5 + 3.2 * np.sin(0.18 * t))
-    q        = np.gradient(theta, t)
-    delta_e  = np.radians(-2 + 1.8 * np.sin(0.32 * t))
-    throttle = np.clip(0.44 + 0.08 * np.sin(0.14 * t), 0, 1)
-    E_thrust = np.cumsum(throttle * Va) * dt
-    return {
-        "t": t, "h": h, "x": x, "Va": Va,
-        "alpha_true": alpha, "theta": theta, "q": q,
-        "delta_e": delta_e, "throttle": throttle, "E_thrust": E_thrust,
-        "meta": {
-            "scenario":    "Демо: управление высотой",
-            "description": "Тестовые данные — замените реальным .flightlog",
-            "saved_at":    "2026-06-07T12:00:00",
-        },
-    }
-
-
 def load_log(path: str) -> dict:
     if not os.path.exists(path) and os.path.exists(path + ".npz"):
         path = path + ".npz"

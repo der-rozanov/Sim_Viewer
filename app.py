@@ -12,7 +12,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.figure import Figure
 from matplotlib.animation import FuncAnimation
 
-from data    import _make_mock_data, load_log, CHANNELS, PRESETS
+from data    import load_log, CHANNELS, PRESETS
 from charts  import ChartSpec, redraw_grid, redraw_focused
 from dialogs import _AddChartDialog, _ChartSettingsDialog
 
@@ -20,7 +20,7 @@ from dialogs import _AddChartDialog, _ChartSettingsDialog
 class FlightViewerApp:
     def __init__(self, root: tk.Tk):
         self.root = root
-        self.root.title("FlightLog Viewer — демо")
+        self.root.title("FlightLog Viewer")
         self.root.geometry("1340x820")
         self.root.minsize(900, 600)
 
@@ -37,7 +37,7 @@ class FlightViewerApp:
         self._gif_active:      bool  = False
 
         self._build_ui()
-        self._load_mock()
+        self._draw_empty()
 
     # ------------------------------------------------------------------
     # UI
@@ -54,8 +54,7 @@ class FlightViewerApp:
         mb = tk.Menu(self.root)
 
         fm = tk.Menu(mb, tearoff=0)
-        fm.add_command(label="Открыть...",            command=self._open_file, accelerator="Ctrl+O")
-        fm.add_command(label="Загрузить демо-данные", command=self._load_mock)
+        fm.add_command(label="Открыть...", command=self._open_file, accelerator="Ctrl+O")
         fm.add_separator()
         fm.add_command(label="Выход", command=self.root.quit)
         mb.add_cascade(label="Файл", menu=fm)
@@ -133,7 +132,7 @@ class FlightViewerApp:
         spd.bind("<<ComboboxSelected>>", self._on_speed_change)
 
     def _build_statusbar(self):
-        self.status_var = tk.StringVar(value="Демо-режим")
+        self.status_var = tk.StringVar(value="Нет данных")
         ttk.Label(self.root, textvariable=self.status_var,
                   relief=tk.SUNKEN, anchor=tk.W,
                   padding=(6, 2)).pack(side=tk.BOTTOM, fill=tk.X)
@@ -141,9 +140,6 @@ class FlightViewerApp:
     # ------------------------------------------------------------------
     # Данные
     # ------------------------------------------------------------------
-
-    def _load_mock(self):
-        self._apply_data(_make_mock_data(), source="Демо-данные")
 
     def _open_file(self):
         path = filedialog.askopenfilename(
@@ -202,7 +198,7 @@ class FlightViewerApp:
 
     def _add_custom_dialog(self):
         if self.data is None:
-            messagebox.showinfo("", "Сначала загрузите данные (Файл → Загрузить демо-данные)")
+            messagebox.showinfo("", "Сначала откройте лог-файл (Файл → Открыть...)")
             return
         _AddChartDialog(self.root, CHANNELS, self._on_add_custom)
 
@@ -247,10 +243,10 @@ class FlightViewerApp:
         self.fig.clear()
         ax = self.fig.add_subplot(111)
         ax.set_axis_off()
-        ax.text(0.5, 0.56, "Откройте лог-файл или загрузите демо-данные",
+        ax.text(0.5, 0.54, "Откройте лог-файл для начала работы",
                 ha="center", va="center", fontsize=13, color="#999",
                 transform=ax.transAxes)
-        ax.text(0.5, 0.46, "Файл → Загрузить демо-данные    или    ПКМ → Добавить график",
+        ax.text(0.5, 0.44, "Файл → Открыть...   (Ctrl+O)",
                 ha="center", va="center", fontsize=10, color="#bbb",
                 transform=ax.transAxes)
         self.canvas.draw()
